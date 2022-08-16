@@ -1,0 +1,8 @@
+node_modules
+.eslintcache
+package-lock.json
+jsconfig.json
+build
+.firebaserc
+firebase.json
+.DS_Store
