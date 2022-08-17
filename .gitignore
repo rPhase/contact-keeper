@@ -6,3 +6,4 @@ build
 .firebaserc
 firebase.json
 .DS_Store
+config/default.json
