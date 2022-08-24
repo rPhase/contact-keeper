@@ -1,14 +1,20 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment, useContext, useEffect } from 'react';
 import ContactContext from '../../context/contact/contactContext';
 import ContactItem from './ContactItem';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import Spinner from '../layout/Spinner';
 
 const Contacts = () => {
   const contactCtx = useContext(ContactContext);
 
-  const { contacts, filtered } = contactCtx;
+  const { contacts, filtered, getContacts, loading } = contactCtx;
 
-  if (contacts.length === 0) {
+  useEffect(() => {
+    console.log('Contacts useEffect');
+    getContacts();
+  }, [getContacts]);
+
+  if (contacts !== null && contacts.length === 0 && !loading) {
     return <h4>Please add a contact.</h4>;
   }
 
@@ -23,13 +29,17 @@ const Contacts = () => {
 
   return (
     <Fragment>
-      <TransitionGroup>
-        {display.map((contact) => (
-          <CSSTransition key={contact.id} timeout={700} classNames='item'>
-            <ContactItem contact={contact} />
-          </CSSTransition>
-        ))}
-      </TransitionGroup>
+      {contacts !== null && !loading ? (
+        <TransitionGroup>
+          {display.map((contact) => (
+            <CSSTransition key={contact._id} timeout={700} classNames='item'>
+              <ContactItem contact={contact} />
+            </CSSTransition>
+          ))}
+        </TransitionGroup>
+      ) : (
+        <Spinner />
+      )}
     </Fragment>
   );
 };

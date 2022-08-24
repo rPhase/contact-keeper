@@ -49,7 +49,7 @@ const ContactForm = () => {
       </h2>
       <input
         type='text'
-        placeholder='name'
+        placeholder='Name'
         name='name'
         value={name}
         onChange={onChangeHandler}

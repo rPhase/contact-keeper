@@ -13,6 +13,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log('Register useEffect');
     if (isAuthenticated) {
       navigate('/');
       console.log('Navigate');

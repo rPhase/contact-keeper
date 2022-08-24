@@ -20,6 +20,7 @@ const Login = () => {
   const { email, password } = user;
 
   useEffect(() => {
+    console.log('Login useEffect');
     if (isAuthenticated) {
       navigate('/');
       console.log('Navigate');
