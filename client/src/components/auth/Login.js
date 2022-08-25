@@ -1,14 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AlertContext from '../../context/alert/alertContext';
-import AuthContext from '../../context/auth/authContext';
+import { useAuth, loginUser, clearErrors } from '../../context/auth/AuthState';
 import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const alertCtx = useContext(AlertContext);
-  const authCtx = useContext(AuthContext);
-
   const { setAlert } = alertCtx;
-  const { loginUser, error, clearErrors, isAuthenticated } = authCtx;
+
+  const [authState, authDispatch] = useAuth();
+  const { error, isAuthenticated } = authState;
 
   const navigate = useNavigate();
 
@@ -20,16 +20,14 @@ const Login = () => {
   const { email, password } = user;
 
   useEffect(() => {
-    console.log('Login useEffect');
     if (isAuthenticated) {
       navigate('/');
-      console.log('Navigate');
     }
     if (error) {
       setAlert(error, 'danger');
-      clearErrors();
+      clearErrors(authDispatch);
     }
-  }, [error, isAuthenticated, setAlert, clearErrors, navigate]);
+  }, [error, isAuthenticated, setAlert, navigate, authDispatch]);
 
   const onChangeHandler = (e) =>
     setUser({ ...user, [e.target.name]: e.target.value });
@@ -39,7 +37,7 @@ const Login = () => {
     if (email === '' || password === '') {
       setAlert('Please fill in all fields', 'danger');
     } else {
-      loginUser({ email, password });
+      loginUser(authDispatch, { email, password });
     }
   };
 

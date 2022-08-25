@@ -1,17 +1,17 @@
-import React, { Fragment, useContext } from 'react';
+import React, { Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
-import AuthContext from '../../context/auth/authContext';
+import { useAuth, logoutUser } from '../../context/auth/AuthState';
 import { useContacts, clearContacts } from '../../context/contact/ContactState';
 
 const Navbar = ({ icon, title }) => {
-  const authCtx = useContext(AuthContext);
+  const [authState, authDispatch] = useAuth();
   const contactDispatch = useContacts()[1];
 
-  const { isAuthenticated, logoutUser, user } = authCtx;
+  const { isAuthenticated, user } = authState;
 
   const onLogout = () => {
-    logoutUser();
+    logoutUser(authDispatch);
     clearContacts(contactDispatch);
   };
 
