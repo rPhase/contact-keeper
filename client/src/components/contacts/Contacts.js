@@ -1,18 +1,16 @@
-import React, { Fragment, useContext, useEffect } from 'react';
-import ContactContext from '../../context/contact/contactContext';
+import React, { Fragment, useEffect } from 'react';
+import { useContacts, getContacts } from '../../context/contact/ContactState';
 import ContactItem from './ContactItem';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import Spinner from '../layout/Spinner';
 
 const Contacts = () => {
-  const contactCtx = useContext(ContactContext);
-
-  const { contacts, filtered, getContacts, loading } = contactCtx;
+  const [contactState, contactDispatch] = useContacts();
+  const { contacts, filtered, loading } = contactState;
 
   useEffect(() => {
-    console.log('Contacts useEffect');
-    getContacts();
-  }, [getContacts]);
+    getContacts(contactDispatch);
+  }, [contactDispatch]);
 
   if (contacts !== null && contacts.length === 0 && !loading) {
     return <h4>Please add a contact.</h4>;
