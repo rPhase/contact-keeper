@@ -1,28 +1,30 @@
 import React, { useContext, useEffect, useState } from 'react';
 import AlertContext from '../../context/alert/alertContext';
-import AuthContext from '../../context/auth/authContext';
+import {
+  useAuth,
+  registerUser,
+  clearErrors,
+} from '../../context/auth/AuthState';
 import { useNavigate } from 'react-router-dom';
 
 const Register = () => {
   const alertCtx = useContext(AlertContext);
-  const authCtx = useContext(AuthContext);
+  const [authState, authDispatch] = useAuth();
 
   const { setAlert } = alertCtx;
-  const { registerUser, error, clearErrors, isAuthenticated } = authCtx;
+  const { error, isAuthenticated } = authState;
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    console.log('Register useEffect');
     if (isAuthenticated) {
       navigate('/');
-      console.log('Navigate');
     }
-    if (error === 'User already exists') {
+    if (error) {
       setAlert(error, 'danger');
-      clearErrors();
+      clearErrors(authDispatch);
     }
-  }, [error, isAuthenticated, setAlert, clearErrors, navigate]);
+  }, [error, isAuthenticated, setAlert, navigate, authDispatch]);
 
   const [user, setUser] = useState({
     name: '',
@@ -43,7 +45,7 @@ const Register = () => {
     } else if (password !== password2) {
       setAlert('Passwords do not match', 'danger');
     } else {
-      registerUser({
+      registerUser(authDispatch, {
         name,
         email,
         password,
