@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import connectDB from '../config/db';
 import { authRouter } from './routes/auth';
+import { usersRouter } from './routes/users';
 
 const app: Application = express();
 
@@ -15,7 +16,7 @@ app.get('/', (_req: Request, res: Response) =>
 );
 
 // Define Routes
-app.use('/api/users', require('./routes/users'));
+app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
 // app.use('/api/contacts', require('./routes/contacts'));
 

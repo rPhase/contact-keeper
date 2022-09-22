@@ -1,14 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-// import * as dotenv from 'dotenv';
-const dotenv = require('dotenv');
+import express, { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv';
 dotenv.config();
-const { check, validationResult } = require('express-validator');
+import { check, validationResult } from 'express-validator';
 
-const User = require('../models/User');
+import User from '../models/User';
 
+const router = express.Router();
 // @route     POST api/users
 // @desc      Register a user
 // @access    Public
@@ -20,7 +19,7 @@ router.post(
     'password',
     'Please enter a password with 6 or more characters'
   ).isLength({ min: 6 }),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
@@ -55,7 +54,7 @@ router.post(
 
       jwt.sign(
         payload,
-        process.env.JWT_SECRET,
+        process.env.JWT_SECRET!,
         {
           expiresIn: 36000,
         },
@@ -64,16 +63,11 @@ router.post(
           res.json({ token });
         }
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
       res.status(500).send('Server Error');
     }
   }
 );
 
-router.post('/test', async (req, res) => {
-  console.log(req.body.name);
-  return res.send(res.body);
-});
-
-module.exports = router;
+export { router as usersRouter };
