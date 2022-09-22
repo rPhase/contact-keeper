@@ -1,21 +1,23 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const config = require('config');
-const auth = require('../middleware/auth');
-const { check, validationResult } = require('express-validator');
+import express, { Request, Response } from 'express';
+import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import auth from '../middleware/auth';
+import { check, validationResult } from 'express-validator';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
-const User = require('../models/User');
+import User from '../models/User';
+
+const router = express.Router();
 
 // @route     GET api/auth
 // @desc      Get logged in user
 // @access    Private
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, async (req: Request, res: Response) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user!.id).select('-password');
     res.json(user);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.message);
     res.status(500).send('Server Error');
   }
@@ -61,20 +63,20 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        process.env.JWT_SECRET!,
         {
           expiresIn: 36000,
         },
-        (err, token) => {
+        (err?: any, token?: string) => {
           if (err) throw err;
           res.json({ token });
         }
       );
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
       res.status(500).send('Server Error');
     }
   }
 );
 
-module.exports = router;
+export { router as authRouter };

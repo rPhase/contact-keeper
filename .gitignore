@@ -8,4 +8,5 @@ firebase.json
 .DS_Store
 config/default.json
 /client/build
-/client/.env.*
+/client/.env*
+.env*

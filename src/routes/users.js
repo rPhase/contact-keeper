@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const config = require('config');
+// import * as dotenv from 'dotenv';
+const dotenv = require('dotenv');
+dotenv.config();
 const { check, validationResult } = require('express-validator');
 
 const User = require('../models/User');
@@ -53,7 +55,7 @@ router.post(
 
       jwt.sign(
         payload,
-        config.get('jwtSecret'),
+        process.env.JWT_SECRET,
         {
           expiresIn: 36000,
         },
@@ -68,5 +70,10 @@ router.post(
     }
   }
 );
+
+router.post('/test', async (req, res) => {
+  console.log(req.body.name);
+  return res.send(res.body);
+});
 
 module.exports = router;
