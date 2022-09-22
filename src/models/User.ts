@@ -1,10 +1,9 @@
 import mongoose from 'mongoose';
 
-interface IUser {
+export interface IUser {
   name: string;
   email: string;
   password: string;
-  date: Date;
 }
 
 const UserSchema = new mongoose.Schema({

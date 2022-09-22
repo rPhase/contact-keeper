@@ -9,9 +9,6 @@ interface JwtPayload {
 export default function (req: Request, res: Response, next: NextFunction) {
   // Get token from header
   const token = req.header('x-auth-token');
-  console.log(req.body);
-
-  console.log(token);
 
   // Check if token exists
   if (!token) {

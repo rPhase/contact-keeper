@@ -1,11 +1,11 @@
 import express, { Request, Response } from 'express';
+import { check, validationResult } from 'express-validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import * as dotenv from 'dotenv';
 dotenv.config();
-import { check, validationResult } from 'express-validator';
 
-import User from '../models/User';
+import User, { IUser } from '../models/User';
 
 const router = express.Router();
 // @route     POST api/users
@@ -25,7 +25,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     // Passed
-    const { name, email, password } = req.body;
+    const { name, email, password }: IUser = req.body;
 
     try {
       let user = await User.findOne({ email: email });
@@ -48,7 +48,7 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id,
+          id: user.id as string,
         },
       };
 
@@ -63,8 +63,8 @@ router.post(
           res.json({ token });
         }
       );
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error) {
+      console.error((error as Error).message);
       res.status(500).send('Server Error');
     }
   }

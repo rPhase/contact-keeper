@@ -17,8 +17,8 @@ router.get('/', auth, async (req: Request, res: Response) => {
   try {
     const user = await User.findById(req.user!.id).select('-password');
     res.json(user);
-  } catch (error: any) {
-    console.error(error.message);
+  } catch (error) {
+    console.error((error as Error).message);
     res.status(500).send('Server Error');
   }
 });
@@ -30,13 +30,13 @@ router.post(
   '/',
   check('email', 'Please include a valid email').isEmail(),
   check('password', 'Password is required').exists(),
-  async (req, res) => {
+  async (req: Request, res: Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
     // Passed
-    const { email, password } = req.body;
+    const { email, password }: { email: string; password: string } = req.body;
 
     try {
       let user = await User.findOne({ email });
@@ -57,7 +57,7 @@ router.post(
 
       const payload = {
         user: {
-          id: user.id,
+          id: user.id as string,
         },
       };
 
@@ -72,8 +72,8 @@ router.post(
           res.json({ token });
         }
       );
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error) {
+      console.error((error as Error).message);
       res.status(500).send('Server Error');
     }
   }

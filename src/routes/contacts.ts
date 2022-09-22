@@ -1,8 +1,7 @@
 import express, { Request, Response } from 'express';
+import mongoose from 'mongoose';
 import auth from '../middleware/auth';
 import { check, validationResult } from 'express-validator';
-
-// const User = require('../models/User');
 import Contact, { IContactField } from '../models/Contact';
 
 const router = express.Router();
@@ -16,8 +15,8 @@ router.get('/', auth, async (req: Request, res: Response) => {
       date: -1,
     });
     res.json(contacts);
-  } catch (error: any) {
-    console.error(error.message);
+  } catch (error) {
+    console.error((error as Error).message);
     res.status(500).send('Server Error');
   }
 });
@@ -35,7 +34,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
     // Passed
-    const { name, email, phone, type } = req.body;
+    const { name, email, phone, type }: IContactField = req.body;
 
     try {
       const newContact = new Contact({
@@ -43,13 +42,13 @@ router.post(
         email,
         phone,
         type,
-        user: req.user!.id,
+        user: req.user!.id as mongoose.Schema.Types.ObjectId,
       });
 
       const contact = await newContact.save();
       res.json(contact);
-    } catch (error: any) {
-      console.error(error.message);
+    } catch (error) {
+      console.error((error as Error).message);
       res.status(500).send('Server Error');
     }
   }
@@ -59,7 +58,7 @@ router.post(
 // @desc      Update contact
 // @access    Private
 router.put('/:id', auth, async (req, res) => {
-  const { name, email, phone, type } = req.body;
+  const { name, email, phone, type }: IContactField = req.body;
   // Build contact object
   const contactFields: IContactField = {};
   if (name) contactFields.name = name;
@@ -86,8 +85,8 @@ router.put('/:id', auth, async (req, res) => {
       { new: true }
     );
     res.json(contact);
-  } catch (error: any) {
-    console.error(error.message);
+  } catch (error) {
+    console.error((error as Error).message);
     res.status(500).send('Server Error');
   }
 });
@@ -110,8 +109,8 @@ router.delete('/:id', auth, async (req, res) => {
     await Contact.findByIdAndRemove(req.params.id);
 
     res.json({ msg: 'Contact removed' });
-  } catch (error: any) {
-    console.error(error.message);
+  } catch (error) {
+    console.error((error as Error).message);
     res.status(500).send('Server Error');
   }
 });
