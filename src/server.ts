@@ -1,6 +1,7 @@
 import express, { Application, Request, Response } from 'express';
 import connectDB from '../config/db';
 import { authRouter } from './routes/auth';
+import { contactsRouter } from './routes/contacts';
 import { usersRouter } from './routes/users';
 
 const app: Application = express();
@@ -18,7 +19,7 @@ app.get('/', (_req: Request, res: Response) =>
 // Define Routes
 app.use('/api/users', usersRouter);
 app.use('/api/auth', authRouter);
-// app.use('/api/contacts', require('./routes/contacts'));
+app.use('/api/contacts', contactsRouter);
 
 const PORT = process.env.PORT || 5000;
 

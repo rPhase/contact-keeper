@@ -1,21 +1,22 @@
-const express = require('express');
-const router = express.Router();
-const auth = require('../middleware/auth');
-const { check, validationResult } = require('express-validator');
+import express, { Request, Response } from 'express';
+import auth from '../middleware/auth';
+import { check, validationResult } from 'express-validator';
 
-const User = require('../models/User');
-const Contact = require('../models/Contact');
+// const User = require('../models/User');
+import Contact, { IContactField } from '../models/Contact';
+
+const router = express.Router();
 
 // @route     GET api/contacts
 // @desc      Get all users contacts
 // @access    Private
-router.get('/', auth, async (req, res) => {
+router.get('/', auth, async (req: Request, res: Response) => {
   try {
-    const contacts = await Contact.find({ user: req.user.id }).sort({
+    const contacts = await Contact.find({ user: req.user!.id }).sort({
       date: -1,
     });
     res.json(contacts);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.message);
     res.status(500).send('Server Error');
   }
@@ -42,12 +43,12 @@ router.post(
         email,
         phone,
         type,
-        user: req.user.id,
+        user: req.user!.id,
       });
 
       const contact = await newContact.save();
       res.json(contact);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error.message);
       res.status(500).send('Server Error');
     }
@@ -60,7 +61,7 @@ router.post(
 router.put('/:id', auth, async (req, res) => {
   const { name, email, phone, type } = req.body;
   // Build contact object
-  const contactFields = {};
+  const contactFields: IContactField = {};
   if (name) contactFields.name = name;
   if (email) contactFields.email = email;
   if (phone) contactFields.phone = phone;
@@ -73,7 +74,7 @@ router.put('/:id', auth, async (req, res) => {
     }
 
     // Make sure user owns contact
-    if (contact.user.toString() !== req.user.id) {
+    if (contact.user!.toString() !== req.user!.id) {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
@@ -85,7 +86,7 @@ router.put('/:id', auth, async (req, res) => {
       { new: true }
     );
     res.json(contact);
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.message);
     res.status(500).send('Server Error');
   }
@@ -102,17 +103,17 @@ router.delete('/:id', auth, async (req, res) => {
     }
 
     // Make sure user owns contact
-    if (contact.user.toString() !== req.user.id) {
+    if (contact.user!.toString() !== req.user!.id) {
       return res.status(401).json({ msg: 'Not authorized' });
     }
 
     await Contact.findByIdAndRemove(req.params.id);
 
     res.json({ msg: 'Contact removed' });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error.message);
     res.status(500).send('Server Error');
   }
 });
 
-module.exports = router;
+export { router as contactsRouter };

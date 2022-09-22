@@ -1,6 +1,13 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-const ContactSchema = mongoose.Schema({
+export interface IContactField {
+  name?: string;
+  email?: string;
+  phone?: string;
+  type?: string;
+}
+
+const ContactSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'users',
@@ -27,4 +34,6 @@ const ContactSchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model('contact', ContactSchema);
+const Contact = mongoose.model('contact', ContactSchema);
+
+export default Contact;
