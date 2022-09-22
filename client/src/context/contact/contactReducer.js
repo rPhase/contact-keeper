@@ -9,6 +9,7 @@ import {
   CONTACT_ERROR,
   GET_CONTACTS,
   CLEAR_CONTACTS,
+  CLEAR_ERRORS,
 } from '../types';
 
 const ContactReducer = (state, action) => {
@@ -76,6 +77,11 @@ const ContactReducer = (state, action) => {
       return {
         ...state,
         error: action.payload,
+      };
+    case CLEAR_ERRORS:
+      return {
+        ...state,
+        error: null,
       };
     default:
       return state;

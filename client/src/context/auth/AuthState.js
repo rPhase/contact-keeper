@@ -45,7 +45,7 @@ export const registerUser = async (dispatch, formData) => {
     const res = await axios.post('/api/users', formData, config);
     dispatch({ type: REGISTER_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: REGISTER_FAIL, payload: error.response.data.msg });
+    dispatch({ type: REGISTER_FAIL, payload: error.response.data });
   }
 };
 
@@ -61,7 +61,7 @@ export const loginUser = async (dispatch, formData) => {
     const res = await axios.post('/api/auth', formData, config);
     dispatch({ type: LOGIN_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: LOGIN_FAIL, payload: error.response.data.msg });
+    dispatch({ type: LOGIN_FAIL, payload: error.response.data });
   }
 };
 

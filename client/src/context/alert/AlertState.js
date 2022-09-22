@@ -21,11 +21,22 @@ const AlertState = (props) => {
     setTimeout(() => dispatch({ type: REMOVE_ALERT, payload: id }), timeout);
   };
 
+  // Handle alerts
+  const handleAlerts = (error) => {
+    if (error.errors) {
+      error.errors.map((err) => setAlert(err.msg, 'danger'));
+    }
+    if (error.msg) {
+      setAlert(error.msg, 'danger');
+    }
+  };
+
   return (
     <AlertContext.Provider
       value={{
         alerts: state,
         setAlert,
+        handleAlerts,
       }}
     >
       {props.children}

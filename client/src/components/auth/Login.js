@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const alertCtx = useContext(AlertContext);
-  const { setAlert } = alertCtx;
+  const { setAlert, handleAlerts } = alertCtx;
 
   const [authState, authDispatch] = useAuth();
   const { error, isAuthenticated } = authState;
@@ -24,10 +24,10 @@ const Login = () => {
       navigate('/');
     }
     if (error) {
-      setAlert(error, 'danger');
+      handleAlerts(error);
       clearErrors(authDispatch);
     }
-  }, [error, isAuthenticated, setAlert, navigate, authDispatch]);
+  }, [error, isAuthenticated, handleAlerts, navigate, authDispatch]);
 
   const onChangeHandler = (e) =>
     setUser({ ...user, [e.target.name]: e.target.value });

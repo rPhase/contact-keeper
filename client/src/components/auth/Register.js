@@ -11,7 +11,7 @@ const Register = () => {
   const alertCtx = useContext(AlertContext);
   const [authState, authDispatch] = useAuth();
 
-  const { setAlert } = alertCtx;
+  const { setAlert, handleAlerts } = alertCtx;
   const { error, isAuthenticated } = authState;
 
   const navigate = useNavigate();
@@ -21,10 +21,10 @@ const Register = () => {
       navigate('/');
     }
     if (error) {
-      setAlert(error, 'danger');
+      handleAlerts(error);
       clearErrors(authDispatch);
     }
-  }, [error, isAuthenticated, setAlert, navigate, authDispatch]);
+  }, [error, isAuthenticated, handleAlerts, navigate, authDispatch]);
 
   const [user, setUser] = useState({
     name: '',

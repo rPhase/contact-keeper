@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import AlertContext from '../../context/alert/alertContext';
 import {
   useContacts,
   addContact,
   updateContact,
   clearCurrent,
+  clearErrors,
 } from '../../context/contact/ContactState';
 
 const defaultContact = {
@@ -14,9 +16,10 @@ const defaultContact = {
 };
 
 const ContactForm = () => {
+  const { handleAlerts } = useContext(AlertContext);
   const [contactState, contactDispatch] = useContacts();
 
-  const { current } = contactState;
+  const { current, error } = contactState;
 
   const [contact, setContact] = useState(defaultContact);
 
@@ -27,6 +30,13 @@ const ContactForm = () => {
       setContact(defaultContact);
     }
   }, [current]);
+
+  useEffect(() => {
+    if (error) {
+      handleAlerts(error);
+      clearErrors(contactDispatch);
+    }
+  }, [error, handleAlerts, contactDispatch]);
 
   const { name, email, phone, type } = contact;
 

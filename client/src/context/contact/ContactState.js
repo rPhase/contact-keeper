@@ -14,6 +14,7 @@ import {
   CLEAR_CONTACTS,
   CLEAR_FILTER,
   CONTACT_ERROR,
+  CLEAR_ERRORS,
 } from '../types';
 
 // Create a custom hook to use contact context
@@ -30,7 +31,7 @@ export const getContacts = async (dispatch) => {
     const res = await axios.get('/api/contacts');
     dispatch({ type: GET_CONTACTS, payload: res.data });
   } catch (error) {
-    dispatch({ type: CONTACT_ERROR, payload: error.response.msg });
+    dispatch({ type: CONTACT_ERROR, payload: error.response.data });
   }
 };
 
@@ -46,7 +47,7 @@ export const addContact = async (dispatch, contact) => {
     const res = await axios.post('/api/contacts', contact, config);
     dispatch({ type: ADD_CONTACT, payload: res.data });
   } catch (error) {
-    dispatch({ type: CONTACT_ERROR, payload: error.response.msg });
+    dispatch({ type: CONTACT_ERROR, payload: error.response.data });
   }
 };
 
@@ -56,7 +57,7 @@ export const deleteContact = async (dispatch, id) => {
     await axios.delete(`/api/contacts/${id}`);
     dispatch({ type: DELETE_CONTACT, payload: id });
   } catch (error) {
-    dispatch({ type: CONTACT_ERROR, payload: error.response.msg });
+    dispatch({ type: CONTACT_ERROR, payload: error.response.data });
   }
 };
 
@@ -76,7 +77,7 @@ export const updateContact = async (dispatch, contact) => {
     );
     dispatch({ type: UPDATE_CONTACT, payload: res.data });
   } catch (error) {
-    dispatch({ type: CONTACT_ERROR, payload: error.response.msg });
+    dispatch({ type: CONTACT_ERROR, payload: error.response.data });
   }
 };
 
@@ -103,6 +104,9 @@ export const filterContacts = (dispatch, text) => {
 export const clearFilter = (dispatch) => {
   dispatch({ type: CLEAR_FILTER });
 };
+
+// Clear Errors
+export const clearErrors = (dispatch) => dispatch({ type: CLEAR_ERRORS });
 
 const ContactState = (props) => {
   const initialState = {
