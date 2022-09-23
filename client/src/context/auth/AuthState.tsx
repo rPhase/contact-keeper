@@ -1,19 +1,9 @@
-import { useContext, useEffect, useReducer } from 'react';
-import axios from 'axios';
-import AuthContext from './authContext';
+import React, { Dispatch, useContext, useEffect, useReducer } from 'react';
+import axios, { AxiosError } from 'axios';
+import AuthContext, { IAuthState } from './authContext';
 import authReducer from './authReducer';
 import setAuthToken from '../../utils/setAuthToken';
-
-import {
-  REGISTER_SUCCESS,
-  REGISTER_FAIL,
-  USER_LOADED,
-  AUTH_ERROR,
-  LOGIN_SUCCESS,
-  LOGIN_FAIL,
-  LOGOUT,
-  CLEAR_ERRORS,
-} from '../types';
+import { AuthAction, AuthActionTypes } from './authTypes';
 
 // Create a custom hook to use the auth context
 export const useAuth = () => {
@@ -24,17 +14,20 @@ export const useAuth = () => {
 // Action creators
 
 // Load User
-export const loadUser = async (dispatch) => {
+export const loadUser = async (dispatch: Dispatch<AuthAction>) => {
   try {
     const res = await axios.get('/api/auth');
-    dispatch({ type: USER_LOADED, payload: res.data });
+    dispatch({ type: AuthActionTypes.USER_LOADED, payload: res.data });
   } catch (error) {
-    dispatch({ type: AUTH_ERROR });
+    dispatch({ type: AuthActionTypes.AUTH_ERROR });
   }
 };
 
 // Register User
-export const registerUser = async (dispatch, formData) => {
+export const registerUser = async (
+  dispatch: Dispatch<AuthAction>,
+  formData: HTMLFormElement
+) => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -43,14 +36,20 @@ export const registerUser = async (dispatch, formData) => {
 
   try {
     const res = await axios.post('/api/users', formData, config);
-    dispatch({ type: REGISTER_SUCCESS, payload: res.data });
+    dispatch({ type: AuthActionTypes.REGISTER_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: REGISTER_FAIL, payload: error.response.data });
+    dispatch({
+      type: AuthActionTypes.REGISTER_FAIL,
+      payload: (error as AxiosError).response!.data,
+    });
   }
 };
 
 // Login User
-export const loginUser = async (dispatch, formData) => {
+export const loginUser = async (
+  dispatch: Dispatch<AuthAction>,
+  formData: HTMLFormElement
+) => {
   const config = {
     headers: {
       'Content-Type': 'application/json',
@@ -59,23 +58,28 @@ export const loginUser = async (dispatch, formData) => {
 
   try {
     const res = await axios.post('/api/auth', formData, config);
-    dispatch({ type: LOGIN_SUCCESS, payload: res.data });
+    dispatch({ type: AuthActionTypes.LOGIN_SUCCESS, payload: res.data });
   } catch (error) {
-    dispatch({ type: LOGIN_FAIL, payload: error.response.data });
+    dispatch({
+      type: AuthActionTypes.LOGIN_FAIL,
+      payload: (error as AxiosError).response!.data,
+    });
   }
 };
 
 // Logout
-export const logoutUser = (dispatch) => dispatch({ type: LOGOUT });
+export const logoutUser = (dispatch: Dispatch<AuthAction>) =>
+  dispatch({ type: AuthActionTypes.LOGOUT });
 
 // Clear Errors
-export const clearErrors = (dispatch) => dispatch({ type: CLEAR_ERRORS });
+export const clearErrors = (dispatch: Dispatch<AuthAction>) =>
+  dispatch({ type: AuthActionTypes.CLEAR_ERRORS });
 
 // AuthState Provider
-const AuthState = (props) => {
-  const initialState = {
+const AuthState = ({ children }: { children: React.ReactNode }) => {
+  const initialState: IAuthState = {
     token: localStorage.getItem('token'),
-    isAuthenticated: null,
+    isAuthenticated: false,
     loading: true,
     user: null,
     error: null,
@@ -102,7 +106,7 @@ const AuthState = (props) => {
 
   return (
     <AuthContext.Provider value={{ state, dispatch }}>
-      {props.children}
+      {children}
     </AuthContext.Provider>
   );
 };
