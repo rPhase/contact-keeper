@@ -8,7 +8,7 @@ export interface IUser {
 }
 
 export interface IError {
-  error: string | Record<string, any>;
+  error: string | Record<string, string>;
 }
 
 export interface IAuthState {

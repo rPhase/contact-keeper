@@ -1,28 +1,29 @@
-import { useReducer } from 'react';
+import React, { useReducer } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import AlertContext from './alertContext';
-import alertReducer from './alertReducer';
+import AlertContext, { IAlert, IError } from './alertContext';
+import alertReducer, { AlertActionTypes } from './alertReducer';
 
-import { SET_ALERT, REMOVE_ALERT } from '../types';
-
-const AlertState = (props) => {
-  const initialState = [];
+const AlertState = ({ children }: { children: React.ReactNode }) => {
+  const initialState: IAlert[] = [];
 
   const [state, dispatch] = useReducer(alertReducer, initialState);
 
   // Set Alert
-  const setAlert = (msg, type, timeout = 5000) => {
+  const setAlert = (msg: string, type: string, timeout = 5000) => {
     const id = uuidv4();
     dispatch({
-      type: SET_ALERT,
+      type: AlertActionTypes.SET_ALERT,
       payload: { msg, type, id },
     });
 
-    setTimeout(() => dispatch({ type: REMOVE_ALERT, payload: id }), timeout);
+    setTimeout(
+      () => dispatch({ type: AlertActionTypes.REMOVE_ALERT, payload: id }),
+      timeout
+    );
   };
 
   // Handle alerts
-  const handleAlerts = (error) => {
+  const handleAlerts = (error: IError) => {
     if (error.errors) {
       error.errors.map((err) => setAlert(err.msg, 'danger'));
     }
@@ -39,7 +40,7 @@ const AlertState = (props) => {
         handleAlerts,
       }}
     >
-      {props.children}
+      {children}
     </AlertContext.Provider>
   );
 };

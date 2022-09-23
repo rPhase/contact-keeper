@@ -1,7 +1,7 @@
-import { IAuthContext } from './authContext';
+import { IAuthState } from './authContext';
 import { AuthAction } from './authTypes';
 
-const AuthReducer = (state: IAuthContext, action: AuthAction) => {
+const AuthReducer = (state: IAuthState, action: AuthAction) => {
   switch (action.type) {
     case 'REGISTER_SUCCESS':
     case 'LOGIN_SUCCESS':
