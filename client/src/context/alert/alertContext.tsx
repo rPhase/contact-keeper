@@ -12,13 +12,15 @@ export interface IError {
 }
 
 export interface IAlertContext {
-  alerts: IAlert[] | null;
-  setAlert?: (msg: string, type: string, timeout: number) => void;
-  handleAlerts?: (error: IError) => void;
+  alerts: IAlert[];
+  setAlert: (msg: string, type: string, timeout?: number) => void;
+  handleAlerts: (error: IError) => void;
 }
 
 const initialState: IAlertContext = {
   alerts: [],
+  setAlert: () => {},
+  handleAlerts: () => {},
 };
 
 const alertContext = createContext(initialState);

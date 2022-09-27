@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
-import AlertContext from '../../context/alert/alertContext';
+import AlertContext, { IError } from '../../context/alert/alertContext';
+import { IContact, IContactState } from '../../context/contact/contactContext';
 import {
   useContacts,
   addContact,
@@ -7,8 +8,9 @@ import {
   clearCurrent,
   clearErrors,
 } from '../../context/contact/ContactState';
+import { ContactAction } from '../../context/contact/contactTypes';
 
-const defaultContact = {
+const defaultContact: IContact = {
   name: '',
   email: '',
   phone: '',
@@ -17,7 +19,10 @@ const defaultContact = {
 
 const ContactForm = () => {
   const { handleAlerts } = useContext(AlertContext);
-  const [contactState, contactDispatch] = useContacts();
+  const [contactState, contactDispatch] = useContacts() as [
+    IContactState,
+    React.Dispatch<ContactAction>
+  ];
 
   const { current, error } = contactState;
 
@@ -33,17 +38,17 @@ const ContactForm = () => {
 
   useEffect(() => {
     if (error) {
-      handleAlerts(error);
+      handleAlerts(error as IError);
       clearErrors(contactDispatch);
     }
   }, [error, handleAlerts, contactDispatch]);
 
   const { name, email, phone, type } = contact;
 
-  const onChangeHandler = (e) =>
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
     setContact({ ...contact, [e.target.name]: e.target.value });
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (current === null) {
       addContact(contactDispatch, contact);

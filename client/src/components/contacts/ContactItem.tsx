@@ -1,19 +1,20 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {
   useContacts,
   deleteContact,
   setCurrent,
   clearCurrent,
 } from '../../context/contact/ContactState';
+import { IContact } from '../../context/contact/contactContext';
+import { ContactAction } from '../../context/contact/contactTypes';
 
-const ContactItem = ({ contact }) => {
-  const contactDispatch = useContacts()[1];
+const ContactItem = ({ contact }: { contact: IContact }) => {
+  const contactDispatch = useContacts()[1] as React.Dispatch<ContactAction>;
 
   const { _id, name, email, phone, type } = contact;
 
   const onDelete = () => {
-    deleteContact(contactDispatch, _id);
+    deleteContact(contactDispatch, _id!);
     clearCurrent(contactDispatch);
   };
 
@@ -56,10 +57,6 @@ const ContactItem = ({ contact }) => {
       </p>
     </div>
   );
-};
-
-ContactItem.propTypes = {
-  contact: PropTypes.object.isRequired,
 };
 
 export default ContactItem;

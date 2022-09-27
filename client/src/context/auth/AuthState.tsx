@@ -1,6 +1,6 @@
 import React, { Dispatch, useContext, useEffect, useReducer } from 'react';
 import axios, { AxiosError } from 'axios';
-import AuthContext, { IAuthState } from './authContext';
+import AuthContext, { IAuthState, IUser } from './authContext';
 import authReducer from './authReducer';
 import setAuthToken from '../../utils/setAuthToken';
 import { AuthAction, AuthActionTypes } from './authTypes';
@@ -26,7 +26,7 @@ export const loadUser = async (dispatch: Dispatch<AuthAction>) => {
 // Register User
 export const registerUser = async (
   dispatch: Dispatch<AuthAction>,
-  formData: HTMLFormElement
+  formData: IUser
 ) => {
   const config = {
     headers: {
@@ -48,7 +48,7 @@ export const registerUser = async (
 // Login User
 export const loginUser = async (
   dispatch: Dispatch<AuthAction>,
-  formData: HTMLFormElement
+  formData: { email: string; password: string }
 ) => {
   const config = {
     headers: {

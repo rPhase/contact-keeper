@@ -1,12 +1,17 @@
 import React, { Fragment } from 'react';
-import PropTypes from 'prop-types';
 import { NavLink } from 'react-router-dom';
+import { IAuthState } from '../../context/auth/authContext';
 import { useAuth, logoutUser } from '../../context/auth/AuthState';
+import { AuthAction } from '../../context/auth/authTypes';
 import { useContacts, clearContacts } from '../../context/contact/ContactState';
+import { ContactAction } from '../../context/contact/contactTypes';
 
-const Navbar = ({ icon, title }) => {
-  const [authState, authDispatch] = useAuth();
-  const contactDispatch = useContacts()[1];
+const Navbar = ({ icon, title }: { icon: string; title: string }) => {
+  const [authState, authDispatch] = useAuth() as [
+    IAuthState,
+    React.Dispatch<AuthAction>
+  ];
+  const contactDispatch = useContacts()[1] as React.Dispatch<ContactAction>;
 
   const { isAuthenticated, user } = authState;
 
@@ -41,8 +46,11 @@ const Navbar = ({ icon, title }) => {
   return (
     <div className='navbar bg-primary'>
       <h1>
-        <i className={icon} /> {title}
+        <NavLink to='/'>
+          <i className={icon} /> {title}
+        </NavLink>
       </h1>
+
       <ul>
         {/* <li>
           <NavLink to='/'>Home</NavLink>
@@ -54,11 +62,6 @@ const Navbar = ({ icon, title }) => {
       </ul>
     </div>
   );
-};
-
-Navbar.propTypes = {
-  title: PropTypes.string.isRequired,
-  icon: PropTypes.string,
 };
 
 Navbar.defaultProps = {

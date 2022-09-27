@@ -1,24 +1,16 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import {
   useContacts,
   filterContacts,
   clearFilter,
 } from '../../context/contact/ContactState';
+import { ContactAction } from '../../context/contact/contactTypes';
 
 const ContactFilter = () => {
-  const [contactState, contactDispatch] = useContacts();
-  const { filtered } = contactState;
+  const contactDispatch = useContacts()[1] as React.Dispatch<ContactAction>;
 
-  const textRef = useRef('');
-
-  useEffect(() => {
-    if (filtered === null) {
-      textRef.current.value = '';
-    }
-  }, [filtered]);
-
-  const onChangeHandler = (e) => {
-    if (textRef.current.value !== '') {
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.value !== '') {
       filterContacts(contactDispatch, e.target.value);
     } else {
       clearFilter(contactDispatch);
@@ -28,7 +20,6 @@ const ContactFilter = () => {
   return (
     <form>
       <input
-        ref={textRef}
         type='text'
         placeholder='Filter Contacts...'
         onChange={onChangeHandler}

@@ -1,15 +1,20 @@
 import React, { useContext, useEffect, useState } from 'react';
-import AlertContext from '../../context/alert/alertContext';
+import AlertContext, { IError } from '../../context/alert/alertContext';
 import {
   useAuth,
   registerUser,
   clearErrors,
 } from '../../context/auth/AuthState';
 import { useNavigate } from 'react-router-dom';
+import { IAuthState } from '../../context/auth/authContext';
+import { AuthAction } from '../../context/auth/authTypes';
 
 const Register = () => {
   const alertCtx = useContext(AlertContext);
-  const [authState, authDispatch] = useAuth();
+  const [authState, authDispatch] = useAuth() as [
+    IAuthState,
+    React.Dispatch<AuthAction>
+  ];
 
   const { setAlert, handleAlerts } = alertCtx;
   const { error, isAuthenticated } = authState;
@@ -21,7 +26,7 @@ const Register = () => {
       navigate('/');
     }
     if (error) {
-      handleAlerts(error);
+      handleAlerts(error as IError);
       clearErrors(authDispatch);
     }
   }, [error, isAuthenticated, handleAlerts, navigate, authDispatch]);
@@ -35,10 +40,10 @@ const Register = () => {
 
   const { name, email, password, password2 } = user;
 
-  const onChangeHandler = (e) =>
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) =>
     setUser({ ...user, [e.target.name]: e.target.value });
 
-  const onSubmitHandler = (e) => {
+  const onSubmitHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (name === '' || email === '' || password === '') {
       setAlert('Please enter all fields', 'danger');
@@ -86,8 +91,8 @@ const Register = () => {
             name='password'
             value={password}
             onChange={onChangeHandler}
+            minLength={6}
             required
-            minLength='6'
           />
         </div>
         <div className='form-group'>
@@ -97,8 +102,8 @@ const Register = () => {
             name='password2'
             value={password2}
             onChange={onChangeHandler}
+            minLength={6}
             required
-            minLength='6'
           />
         </div>
         <input
